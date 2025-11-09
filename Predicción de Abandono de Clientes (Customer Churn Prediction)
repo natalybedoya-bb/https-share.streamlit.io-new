@@ -1,40 +1,18 @@
-import streamlit as st
-import pandas as pd
 import joblib
-import os # Necesario para chequear si los archivos existen
+import pandas as pd
 
-# =========================================================
-# 1. Carga Única de Componentes ML (Solo se ejecuta al inicio)
-# =========================================================
+# 1. Guardar el Modelo Final (Asumimos el Random Forest Optimizado)
+joblib.dump(best_rf_model, "modelo_churn_final.pkl")
+print("✅ Modelo final guardado como modelo_churn_final.pkl")
 
-# NOTA: Debes subir estos 3 archivos a tu repositorio de GitHub o a la plataforma de despliegue.
+# 2. Guardar el Scaler (Objeto MinMaxScaler)
+joblib.dump(scaler, "scaler_minmax.pkl")
+print("✅ Scaler guardado como scaler_minmax.pkl")
 
-try:
-    # Cargar el modelo entrenado (Random Forest Optimizado)
-    modelo_final = joblib.load("modelo_churn_final.pkl")
-    
-    # Cargar el escalador entrenado (MinMaxScaler)
-    scaler_obj = joblib.load("scaler_minmax.pkl")
-    
-    # Cargar la lista de columnas (para asegurar el orden y las OHE)
-    columnas_modelo = joblib.load("columnas_entrenamiento.pkl")
-    
-    st.success("Archivos de Machine Learning cargados exitosamente.")
-    
-except FileNotFoundError:
-    st.error("⚠️ Error: No se encontraron los archivos de modelo (.pkl). Asegúrate de que estén en la carpeta raíz.")
-    st.stop() # Detiene la ejecución si los archivos esenciales no están
-
-# =========================================================
-# 2. El resto de la lógica (Interfaz de usuario y funciones)
-# =========================================================
-
-# Define aquí la función de preprocesamiento, ya que ahora puede acceder
-# a las variables globalmente cargadas (scaler_obj, columnas_modelo).
-
-def preprocess_input(input_data):
-    # ... código que usa scaler_obj y columnas_modelo para transformar input_data ...
-    pass 
+# 3. Guardar las Columnas de Entrenamiento
+# Esto asegura que el nuevo cliente tenga las mismas columnas OHE en el orden correcto
+joblib.dump(X.columns.tolist(), "columnas_entrenamiento.pkl")
+print("✅ Columnas guardadas como columnas_entrenamiento.pkl")
 
 # Título de Streamlit y widgets...
 st.title("Predicción de Churn de Clientes Telco")
